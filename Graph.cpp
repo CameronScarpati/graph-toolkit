@@ -168,7 +168,7 @@ size_t Graph::getNumVertices() const { return numVertices; }
 
 std::vector<int> Graph::getNeighbors(int vertex) const {
   if (!validVertex(vertex))
-    return {};
+    throw std::out_of_range("This index is out of range.");
 
   std::vector<int> neighbors;
   for (int i = 0; i < numVertices; ++i)
