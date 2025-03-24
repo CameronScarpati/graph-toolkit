@@ -9,19 +9,19 @@
 
 <br />
 <div>
-  <h3>Hamiltonian Cycle Finder</h3>
+  <h3>C++ Graph Toolkit</h3>
 
   <p>
     A robust C++ graph library designed to detect Hamiltonian cycles and perform comprehensive graph operations.
     <br />
-    <a href="https://github.com/CameronScarpati/hamiltonian-cycle-finder"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/CameronScarpati/graph-toolkit"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/CameronScarpati/hamiltonian-cycle-finder">View Demo</a>
+    <a href="https://github.com/CameronScarpati/graph-toolkit">View Demo</a>
     ·
-    <a href="https://github.com/CameronScarpati/hamiltonian-cycle-finder/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/CameronScarpati/graph-toolkit/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
-    <a href="https://github.com/CameronScarpati/hamiltonian-cycle-finder/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/CameronScarpati/graph-toolkit/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
@@ -67,8 +67,8 @@ Ensure you have the following installed:
 
 1. **Clone the repository**:
    ```sh
-   git clone https://github.com/CameronScarpati/hamiltonian-cycle-finder.git
-   cd hamiltonian-cycle-finder
+   git clone https://github.com/CameronScarpati/graph-toolkit.git
+   cd graph-toolkit
    ```
 
 2. **Create a build directory and navigate into it**:
@@ -115,7 +115,7 @@ The test suite covers:
 - [ ] Extend support for weighted and undirected graphs
 - [ ] Add more graph operations for further learning.
 
-See the [open issues](https://github.com/CameronScarpati/hamiltonian-cycle-finder/issues) for a full list of proposed features and known issues.
+See the [open issues](https://github.com/CameronScarpati/graph-toolkit/issues) for a full list of proposed features and known issues.
 
 <p>(<a href="#readme-top">back to top</a>)</p>
 
@@ -148,7 +148,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 Cameron Scarpati - [LinkedIn](https://linkedin.com/in/cameron-scarpati) - cameronscarp@gmail.com
 
 Project
-Link: [https://github.com/CameronScarpati/hamiltonian-cycle-finder](https://github.com/CameronScarpati/hamiltonian-cycle-finder)
+Link: [https://github.com/CameronScarpati/graph-toolkit](https://github.com/CameronScarpati/graph-toolkit)
 
 <p>(<a href="#readme-top">back to top</a>)</p>
 
@@ -165,25 +165,25 @@ Link: [https://github.com/CameronScarpati/hamiltonian-cycle-finder](https://gith
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/CameronScarpati/hamiltonian-cycle-finder.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/CameronScarpati/graph-toolkit.svg?style=for-the-badge
 
-[contributors-url]: https://github.com/CameronScarpati/hamiltonian-cycle-finder/graphs/contributors
+[contributors-url]: https://github.com/CameronScarpati/graph-toolkit/graphs/contributors
 
-[forks-shield]: https://img.shields.io/github/forks/CameronScarpati/hamiltonian-cycle-finder.svg?style=for-the-badge
+[forks-shield]: https://img.shields.io/github/forks/CameronScarpati/graph-toolkit.svg?style=for-the-badge
 
-[forks-url]: https://github.com/CameronScarpati/hamiltonian-cycle-finder/network/members
+[forks-url]: https://github.com/CameronScarpati/graph-toolkit/network/members
 
-[stars-shield]: https://img.shields.io/github/stars/CameronScarpati/hamiltonian-cycle-finder.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/CameronScarpati/graph-toolkit.svg?style=for-the-badge
 
-[stars-url]: https://github.com/CameronScarpati/hamiltonian-cycle-finder/stargazers
+[stars-url]: https://github.com/CameronScarpati/graph-toolkit/stargazers
 
-[issues-shield]: https://img.shields.io/github/issues/CameronScarpati/hamiltonian-cycle-finder.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/CameronScarpati/graph-toolkit.svg?style=for-the-badge
 
-[issues-url]: https://github.com/CameronScarpati/hamiltonian-cycle-finder/issues
+[issues-url]: https://github.com/CameronScarpati/graph-toolkit/issues
 
-[license-shield]: https://img.shields.io/github/license/CameronScarpati/hamiltonian-cycle-finder?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/CameronScarpati/graph-toolkit?style=for-the-badge
 
-[license-url]: https://github.com/CameronScarpati/hamiltonian-cycle-finder/blob/main/LICENSE
+[license-url]: https://github.com/CameronScarpati/graph-toolkit/blob/main/LICENSE
 
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 
