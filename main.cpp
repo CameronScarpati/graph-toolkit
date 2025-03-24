@@ -323,15 +323,17 @@ void testCompleteGraph() {
 //
 void testHamiltonianCycles() {
   std::cout << "\n[Hamiltonian Cycle Tests]" << std::endl;
-  // Graph without Hamiltonian cycle
+
+  // 1. Graph without Hamiltonian cycle.
   Graph gNonHam(3);
   gNonHam.addEdge(0, 1);
   gNonHam.addEdge(1, 0);
   gNonHam.print();
   runTest(!gNonHam.hasHamiltonianCycle(), "hasHamiltonianCycle returns false for graph without Hamiltonian cycle");
+  runTest(!gNonHam.hasHamiltonianCycle(), "hasHamiltonianCycle returns false for graph without Hamiltonian cycle");
   runTest(gNonHam.findHamiltonianCycles().empty(), "findHamiltonianCycles returns empty for graph without Hamiltonian cycle");
 
-  // Graph with Hamiltonian cycle (simple cycle)
+  // 2. Graph with a simple Hamiltonian cycle.
   Graph gHam(4);
   gHam.addEdge(0, 1);
   gHam.addEdge(1, 2);
@@ -342,21 +344,21 @@ void testHamiltonianCycles() {
   auto cycles = gHam.findHamiltonianCycles();
   runTest(!cycles.empty(), "findHamiltonianCycles returns non-empty for graph with Hamiltonian cycle");
 
-  // Validate one cycle
+  // Validate one returned cycle.
   bool validCycle = true;
   if (!cycles.empty()) {
     auto cycle = cycles[0];
     if (cycle.size() != gHam.getNumVertices() + 1)
       validCycle = false;
     else {
-      // Check edge connectivity along the cycle.
+      // Check connectivity along the cycle.
       for (size_t i = 0; i < cycle.size() - 1; i++) {
         if (!gHam.isAdjacent(cycle[i], cycle[i + 1])) {
           validCycle = false;
           break;
         }
       }
-      // Check that each vertex is visited exactly once (except start/end).
+      // Ensure each vertex is visited exactly once (except the repeated start/end).
       std::vector<bool> visited(gHam.getNumVertices(), false);
       for (size_t i = 0; i < cycle.size() - 1; i++) {
         visited[cycle[i]] = true;
@@ -370,7 +372,7 @@ void testHamiltonianCycles() {
   }
   runTest(validCycle, "findHamiltonianCycles returns a valid Hamiltonian cycle");
 
-  // Fully connected graph (4 vertices) should yield multiple cycles.
+  // 3. Fully connected graph (complete graph) should yield multiple cycles.
   Graph gFull(4);
   for (int i = 0; i < 4; i++)
     for (int j = 0; j < 4; j++)
@@ -380,6 +382,73 @@ void testHamiltonianCycles() {
   runTest(gFull.hasHamiltonianCycle(), "hasHamiltonianCycle returns true for fully connected graph");
   auto fullCycles = gFull.findHamiltonianCycles();
   runTest(fullCycles.size() > 1, "findHamiltonianCycles returns multiple cycles for complete graph");
+
+  // --- Edge Cases ---
+
+  // 4. Single vertex without a self-loop.
+  Graph gSingle(1);
+  gSingle.print();
+  runTest(!gSingle.hasHamiltonianCycle(), "Single vertex without self-loop: no Hamiltonian cycle");
+  runTest(gSingle.findHamiltonianCycles().empty(), "Single vertex without self-loop: findHamiltonianCycles returns empty");
+
+  // 5. Single vertex with a self-loop.
+  Graph gSingleLoop(1);
+  gSingleLoop.addEdge(0, 0);
+  gSingleLoop.print();
+  runTest(gSingleLoop.hasHamiltonianCycle(), "Single vertex with self-loop: Hamiltonian cycle exists");
+  auto cyclesSingle = gSingleLoop.findHamiltonianCycles();
+  runTest(!cyclesSingle.empty(), "Single vertex with self-loop: findHamiltonianCycles returns non-empty");
+  if (!cyclesSingle.empty()) {
+    bool validSelfCycle = (cyclesSingle[0].size() == 2 && cyclesSingle[0][0] == 0 && cyclesSingle[0][1] == 0);
+    runTest(validSelfCycle, "Single vertex with self-loop: valid cycle returned");
+  }
+
+  // 6. Two vertices with one directional edge (should not form a cycle).
+  Graph gTwoFail(2);
+  gTwoFail.addEdge(0, 1);
+  gTwoFail.print();
+  runTest(!gTwoFail.hasHamiltonianCycle(), "Two vertices with one directional edge: no Hamiltonian cycle");
+  runTest(gTwoFail.findHamiltonianCycles().empty(), "Two vertices with one directional edge: findHamiltonianCycles returns empty");
+
+  // 7. Two vertices with bidirectional edges.
+  Graph gTwo(2);
+  gTwo.addEdge(0, 1);
+  gTwo.addEdge(1, 0);
+  gTwo.print();
+  runTest(gTwo.hasHamiltonianCycle(), "Two vertices with bidirectional edges: Hamiltonian cycle exists");
+  auto cyclesTwo = gTwo.findHamiltonianCycles();
+  runTest(!cyclesTwo.empty(), "Two vertices with bidirectional edges: findHamiltonianCycles returns non-empty");
+  if (!cyclesTwo.empty()) {
+    bool validTwoCycle = (cyclesTwo[0].size() == 3 && cyclesTwo[0][0] == 0 && cyclesTwo[0][1] == 1 && cyclesTwo[0][2] == 0);
+    runTest(validTwoCycle, "Two vertices with bidirectional edges: valid cycle returned");
+  }
+
+  // 8. Disconnected graph.
+  Graph gDisconnected(4);
+  // Component 1: vertices 0 and 1.
+  gDisconnected.addEdge(0, 1);
+  gDisconnected.addEdge(1, 0);
+  // Component 2: vertices 2 and 3.
+  gDisconnected.addEdge(2, 3);
+  gDisconnected.addEdge(3, 2);
+  gDisconnected.print();
+  runTest(!gDisconnected.hasHamiltonianCycle(), "Disconnected graph: no Hamiltonian cycle exists");
+  runTest(gDisconnected.findHamiltonianCycles().empty(), "Disconnected graph: findHamiltonianCycles returns empty");
+
+  // 9. Complex graph with an extra edge (chord) in the cycle.
+  Graph gComplex(5);
+  // Basic cycle: 0 -> 1 -> 2 -> 3 -> 4 -> 0.
+  gComplex.addEdge(0, 1);
+  gComplex.addEdge(1, 2);
+  gComplex.addEdge(2, 3);
+  gComplex.addEdge(3, 4);
+  gComplex.addEdge(4, 0);
+  // Add an extra edge to create an alternative route.
+  gComplex.addEdge(1, 3);
+  gComplex.print();
+  runTest(gComplex.hasHamiltonianCycle(), "Complex graph with extra edge: Hamiltonian cycle exists");
+  auto cyclesComplex = gComplex.findHamiltonianCycles();
+  runTest(!cyclesComplex.empty(), "Complex graph with extra edge: findHamiltonianCycles returns non-empty");
 }
 
 //
@@ -490,6 +559,14 @@ void testExceptionsAndBoundaries() {
     exceptionCaught = true;
   }
   runTest(exceptionCaught, "depthFirstTraversal throws exception on empty graph with invalid start index");
+
+  exceptionCaught = false;
+  try {
+    empty.breadthFirstTraversal(0);
+  } catch (const std::out_of_range &) {
+    exceptionCaught = true;
+  }
+  runTest(exceptionCaught, "breadthFirstTraversal throws exception on empty graph with invalid start index");
 
   // Test single vertex behavior
   Graph single(1);

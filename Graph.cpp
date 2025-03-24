@@ -258,11 +258,10 @@ bool Graph::isComplete() const {
 }
 
 std::vector<std::vector<int>> Graph::findHamiltonianCycles() const {
-  if (getNumVertices() < 3) {
-    if (numVertices == 1 && isAdjacent(0, 0))
-      return {{0, 0}};
+  if (numVertices == 1 && isAdjacent(0, 0))
+    return {{0, 0}};
+  else if (numVertices == 1)
     return {};
-  }
   if (!isConnected())
     return {};
   if (!hasCycle())
