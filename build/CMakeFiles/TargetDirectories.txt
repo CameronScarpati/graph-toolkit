@@ -1,0 +1,4 @@
+/Users/stevenscarpati/Documents/Home/Coding Projects/graph-toolkit/build/CMakeFiles/testing.dir
+/Users/stevenscarpati/Documents/Home/Coding Projects/graph-toolkit/build/CMakeFiles/test.dir
+/Users/stevenscarpati/Documents/Home/Coding Projects/graph-toolkit/build/CMakeFiles/edit_cache.dir
+/Users/stevenscarpati/Documents/Home/Coding Projects/graph-toolkit/build/CMakeFiles/rebuild_cache.dir
