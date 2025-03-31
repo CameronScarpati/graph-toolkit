@@ -1,6 +1,7 @@
 #ifndef HAMILTONIAN_CYCLE_FINDER_GRAPH_H
 #define HAMILTONIAN_CYCLE_FINDER_GRAPH_H
 
+#include <algorithm>
 #include <iostream>
 #include <queue>
 #include <sstream>

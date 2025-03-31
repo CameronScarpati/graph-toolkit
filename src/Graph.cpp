@@ -34,7 +34,8 @@ std::vector<size_t> Graph::depthFirstTraversalHelper(
 }
 
 void Graph::findHamiltonianCyclesHelper(size_t startVertex, size_t currentVertex,
-    std::vector<size_t>& path, std::vector<bool>& visited, std::vector<std::vector<size_t>>& cycles) const
+    std::vector<size_t>& path, std::vector<bool>& visited,
+    std::vector<std::vector<size_t>>& cycles) const
 {
     if (path.size() == numVertices) {
         if (isAdjacent(currentVertex, startVertex)) {
@@ -206,10 +207,9 @@ size_t Graph::getDegree(size_t vertex) const
         throw std::out_of_range("This index is out of range.");
 
     size_t count = 0;
-    std::for_each(adjacencyMatrix[vertex].begin(), adjacencyMatrix[vertex].end(), [&count](size_t e) {
+    for (size_t e : adjacencyMatrix[vertex])
         if (e)
             ++count;
-    });
 
     return count;
 }
