@@ -1,7 +1,6 @@
 #ifndef HAMILTONIAN_CYCLE_FINDER_GRAPH_H
 #define HAMILTONIAN_CYCLE_FINDER_GRAPH_H
 
-#include <algorithm>
 #include <iostream>
 #include <queue>
 #include <sstream>
@@ -13,7 +12,7 @@
 class Graph {
 private:
     size_t numVertices;
-    std::vector<std::vector<size_t>> adjacencyMatrix;
+    std::vector<std::vector<int>> adjacencyMatrix;
 
     /**
      * @brief Checks if a vertex index is valid for this graph.
@@ -28,7 +27,7 @@ private:
      * @param visited Vector tracking visited vertices.
      * @return Vector containing vertices in DFS order.
      */
-    std::vector<size_t> depthFirstTraversalHelper(
+    std::vector<int> depthFirstTraversalHelper(
         size_t startVertex, std::vector<bool>& visited) const;
 
     /**
@@ -37,8 +36,8 @@ private:
      * @param toTraverse Queue of vertices to process.
      * @return Vector containing vertices in BFS order.
      */
-    std::vector<size_t> breadthFirstTraversalHelper(
-        std::vector<bool>& visited, std::queue<size_t>& toTraverse) const;
+    std::vector<int> breadthFirstTraversalHelper(
+        std::vector<bool>& visited, std::queue<int>& toTraverse) const;
 
     /**
      * @brief Helper function for finding hamiltonian cycles.
@@ -49,8 +48,8 @@ private:
      * @param cycles A vector containing the completed hamiltonian cycles.
      */
     void findHamiltonianCyclesHelper(size_t startVertex, size_t currentVertex,
-        std::vector<size_t>& path, std::vector<bool>& visited,
-        std::vector<std::vector<size_t>>& cycles) const;
+        std::vector<int>& path, std::vector<bool>& visited,
+        std::vector<std::vector<int>>& cycles) const;
 
 public:
     /**
@@ -139,7 +138,7 @@ public:
      * @param vertex Source vertex.
      * @return Vector of adjacent vertex indices.
      */
-    std::vector<size_t> getNeighbors(size_t vertex) const;
+    std::vector<int> getNeighbors(size_t vertex) const;
 
     /**
      * @brief Gets the out-degree of a vertex.
@@ -176,7 +175,7 @@ public:
      * @brief Finds all Hamiltonian cycles in the graph if they exist.
      * @return Vector of vector vertices forming a Hamiltonian cycle, empty if none exists.
      */
-    std::vector<std::vector<size_t>> findHamiltonianCycles() const;
+    std::vector<std::vector<int>> findHamiltonianCycles() const;
 
     /**
      * @brief Checks if the graph has a Hamiltonian cycle.
@@ -189,14 +188,14 @@ public:
      * @param startVertex Starting vertex for traversal.
      * @return Vector of vertices in DFS order.
      */
-    std::vector<size_t> depthFirstTraversal(size_t startVertex) const;
+    std::vector<int> depthFirstTraversal(size_t startVertex) const;
 
     /**
      * @brief Performs a breadth-first traversal starting from a vertex.
      * @param startVertex Starting vertex for traversal.
      * @return Vector of vertices in BFS order.
      */
-    std::vector<size_t> breadthFirstTraversal(size_t startVertex) const;
+    std::vector<int> breadthFirstTraversal(size_t startVertex) const;
 
     /**
      * @brief Clears all vertices and edges from the graph.
@@ -208,6 +207,11 @@ public:
      * @return String representing the adjacency matrix.
      */
     std::string toString() const;
+
+    /**
+     * @brief Prints the graph's adjacency matrix to stdout.
+     */
+    void print() const;
 };
 
 #endif // HAMILTONIAN_CYCLE_FINDER_GRAPH_H

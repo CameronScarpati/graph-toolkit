@@ -2,28 +2,28 @@
 
 bool Graph::validVertex(size_t vertex) const noexcept
 {
-    return vertex < numVertices;
+    return vertex >= 0 && vertex < numVertices;
 }
 
-std::vector<size_t> Graph::depthFirstTraversalHelper(
+std::vector<int> Graph::depthFirstTraversalHelper(
     size_t startVertex, std::vector<bool>& visited) const
 {
-    std::vector<size_t> result;
-    std::stack<size_t> toTraverse;
+    std::vector<int> result;
+    std::stack<int> toTraverse;
     toTraverse.push(startVertex);
     visited[startVertex] = true;
 
     while (!toTraverse.empty()) {
         // Searches the current vertex (top of the stack).
-        size_t currentVertex = toTraverse.top();
+        int currentVertex = toTraverse.top();
         result.push_back(currentVertex);
         toTraverse.pop();
 
-        std::vector<size_t> neighbors = getNeighbors(currentVertex);
+        std::vector<int> neighbors = getNeighbors(currentVertex);
 
         // Marks each neighbor as visited
         for (size_t i = neighbors.size(); i-- > 0;) {
-            size_t neighbor = neighbors[i];
+            int neighbor = neighbors[i];
             if (!visited[neighbor]) {
                 visited[neighbor] = true;
                 toTraverse.push(neighbor);
@@ -34,21 +34,20 @@ std::vector<size_t> Graph::depthFirstTraversalHelper(
 }
 
 void Graph::findHamiltonianCyclesHelper(size_t startVertex, size_t currentVertex,
-    std::vector<size_t>& path, std::vector<bool>& visited,
-    std::vector<std::vector<size_t>>& cycles) const
+    std::vector<int>& path, std::vector<bool>& visited, std::vector<std::vector<int>>& cycles) const
 {
     if (path.size() == numVertices) {
         if (isAdjacent(currentVertex, startVertex)) {
-            std::vector<size_t> cycle = path;
+            std::vector<int> cycle = path;
             cycle.push_back(startVertex);
             cycles.push_back(std::move(cycle));
         }
         return;
     }
 
-    std::vector<size_t> neighbors = getNeighbors(currentVertex);
+    std::vector<int> neighbors = getNeighbors(currentVertex);
 
-    for (size_t neighbor : neighbors) {
+    for (int neighbor : neighbors) {
         if (!visited[neighbor]) {
             visited[neighbor] = true;
             path.push_back(neighbor);
@@ -61,20 +60,20 @@ void Graph::findHamiltonianCyclesHelper(size_t startVertex, size_t currentVertex
     }
 }
 
-std::vector<size_t> Graph::breadthFirstTraversalHelper(
-    std::vector<bool>& visited, std::queue<size_t>& toTraverse) const
+std::vector<int> Graph::breadthFirstTraversalHelper(
+    std::vector<bool>& visited, std::queue<int>& toTraverse) const
 {
-    std::vector<size_t> traversal;
+    std::vector<int> traversal;
 
     while (!toTraverse.empty()) {
-        size_t currentVertex = toTraverse.front();
+        int currentVertex = toTraverse.front();
         toTraverse.pop();
 
         traversal.push_back(currentVertex);
 
-        std::vector<size_t> neighbors = getNeighbors(currentVertex);
+        std::vector<int> neighbors = getNeighbors(currentVertex);
 
-        for (size_t neighbor : neighbors) {
+        for (int neighbor : neighbors) {
             if (!visited[neighbor]) {
                 visited[neighbor] = true;
                 toTraverse.push(neighbor);
@@ -92,7 +91,7 @@ Graph::Graph()
 Graph::Graph(size_t vertices)
     : numVertices(vertices)
 {
-    adjacencyMatrix.resize(vertices, std::vector<size_t>(vertices, 0));
+    adjacencyMatrix.resize(vertices, std::vector<int>(vertices, 0));
 }
 
 Graph::Graph(const Graph& other)
@@ -188,12 +187,12 @@ size_t Graph::getNumVertices() const
     return numVertices;
 }
 
-std::vector<size_t> Graph::getNeighbors(size_t vertex) const
+std::vector<int> Graph::getNeighbors(size_t vertex) const
 {
     if (!validVertex(vertex))
         throw std::out_of_range("This index is out of range.");
 
-    std::vector<size_t> neighbors;
+    std::vector<int> neighbors;
     for (size_t i = 0; i < numVertices; ++i)
         if (adjacencyMatrix[vertex][i] == 1)
             neighbors.push_back(i);
@@ -206,10 +205,11 @@ size_t Graph::getDegree(size_t vertex) const
     if (!validVertex(vertex))
         throw std::out_of_range("This index is out of range.");
 
-    size_t count = 0;
-    for (size_t e : adjacencyMatrix[vertex])
+    int count = 0;
+    std::for_each(adjacencyMatrix[vertex].begin(), adjacencyMatrix[vertex].end(), [&count](int e) {
         if (e)
             ++count;
+    });
 
     return count;
 }
@@ -217,7 +217,7 @@ size_t Graph::getDegree(size_t vertex) const
 bool Graph::isConnected() const
 {
     for (size_t i = 0; i < numVertices; i++) {
-        std::vector<size_t> traversal = depthFirstTraversal(i);
+        std::vector<int> traversal = depthFirstTraversal(i);
 
         if (traversal.size() == numVertices)
             return true;
@@ -228,7 +228,7 @@ bool Graph::isConnected() const
 bool Graph::isStronglyConnected() const
 {
     for (size_t i = 0; i < numVertices; i++) {
-        std::vector<size_t> traversal = depthFirstTraversal(i);
+        std::vector<int> traversal = depthFirstTraversal(i);
 
         if (traversal.size() < numVertices)
             return false;
@@ -238,8 +238,8 @@ bool Graph::isStronglyConnected() const
 
 bool Graph::hasCycle() const
 {
-    std::vector<size_t> inDegree(getNumVertices(), 0);
-    std::queue<size_t> toTraverse;
+    std::vector<int> inDegree(getNumVertices(), 0);
+    std::queue<int> toTraverse;
 
     size_t visited = 0;
 
@@ -256,7 +256,7 @@ bool Graph::hasCycle() const
 
     // Run a BFS on all zero in-degree vertices.
     while (!toTraverse.empty()) {
-        size_t sourceVertex = toTraverse.front();
+        int sourceVertex = toTraverse.front();
         toTraverse.pop();
         visited++;
 
@@ -283,7 +283,7 @@ bool Graph::isComplete() const
     return true;
 }
 
-std::vector<std::vector<size_t>> Graph::findHamiltonianCycles() const
+std::vector<std::vector<int>> Graph::findHamiltonianCycles() const
 {
     if (numVertices == 1 && isAdjacent(0, 0))
         return { { 0, 0 } };
@@ -294,17 +294,17 @@ std::vector<std::vector<size_t>> Graph::findHamiltonianCycles() const
     if (!hasCycle())
         return {};
 
-    std::vector<std::vector<size_t>> hamiltonianCycles;
+    std::vector<std::vector<int>> hamiltonianCycles;
 
     for (size_t startVertex = 0; startVertex < numVertices; ++startVertex) {
         std::vector<bool> visited(numVertices, false);
-        std::vector<size_t> path;
+        std::vector<int> path;
 
         visited[startVertex] = true;
         path.push_back(startVertex);
 
-        std::vector<size_t> neighbors = getNeighbors(startVertex);
-        for (size_t neighbor : neighbors) {
+        std::vector<int> neighbors = getNeighbors(startVertex);
+        for (int neighbor : neighbors) {
             if (!visited[neighbor]) {
                 visited[neighbor] = true;
                 path.push_back(neighbor);
@@ -325,7 +325,7 @@ bool Graph::hasHamiltonianCycle() const
     return !findHamiltonianCycles().empty();
 }
 
-std::vector<size_t> Graph::depthFirstTraversal(size_t startVertex) const
+std::vector<int> Graph::depthFirstTraversal(size_t startVertex) const
 {
     if (!validVertex(startVertex))
         throw std::out_of_range("This index is out of range.");
@@ -334,17 +334,17 @@ std::vector<size_t> Graph::depthFirstTraversal(size_t startVertex) const
     return depthFirstTraversalHelper(startVertex, visited);
 }
 
-std::vector<size_t> Graph::breadthFirstTraversal(size_t startVertex) const
+std::vector<int> Graph::breadthFirstTraversal(size_t startVertex) const
 {
     if (!validVertex(startVertex))
         throw std::out_of_range("This index is out of range.");
 
     std::vector<bool> visited(numVertices, false);
-    std::queue<size_t> toTraverse;
+    std::queue<int> toTraverse;
     toTraverse.push(startVertex);
     visited[startVertex] = true;
 
-    std::vector<size_t> traversal = breadthFirstTraversalHelper(visited, toTraverse);
+    std::vector<int> traversal = breadthFirstTraversalHelper(visited, toTraverse);
     return traversal;
 }
 
@@ -370,10 +370,15 @@ std::string Graph::toString() const
 
     for (size_t row = 0; row < numVertices; ++row) {
         ss << row << " | ";
-        for (size_t col : adjacencyMatrix[row])
+        for (int col : adjacencyMatrix[row])
             ss << col << " ";
         ss << "\n";
     }
 
     return ss.str();
+}
+
+void Graph::print() const
+{
+    std::cout << toString();
 }

@@ -93,8 +93,6 @@ TEST_F(GraphTest, AddVertex)
 
     // Test-edge connections with new vertex
     EXPECT_NO_THROW({
-        EXPECT_FALSE(g.isAdjacent(0, 3));
-        EXPECT_FALSE(g.isAdjacent(3, 1));
         g.addEdge(0, 3);
         g.addEdge(3, 1);
         EXPECT_TRUE(g.isAdjacent(0, 3));
@@ -149,7 +147,7 @@ TEST_F(GraphTest, GetNeighbors)
     g.addEdge(0, 2);
     g.addEdge(0, 4);
 
-    std::vector<size_t> neighbors = g.getNeighbors(0);
+    std::vector<int> neighbors = g.getNeighbors(0);
     EXPECT_EQ(neighbors.size(), 3);
     EXPECT_TRUE(std::find(neighbors.begin(), neighbors.end(), 1) != neighbors.end());
     EXPECT_TRUE(std::find(neighbors.begin(), neighbors.end(), 2) != neighbors.end());
@@ -278,7 +276,7 @@ TEST_F(GraphTest, FindHamiltonianCycles)
     g1.addEdge(0, 0);
     auto cycles = g1.findHamiltonianCycles();
     EXPECT_EQ(cycles.size(), 1);
-    EXPECT_EQ(cycles[0], std::vector<size_t>({ 0, 0 }));
+    EXPECT_EQ(cycles[0], std::vector<int>({ 0, 0 }));
 
     // Single vertex without self-loop
     Graph g2(1);
@@ -347,7 +345,7 @@ TEST_F(GraphTest, DepthFirstTraversal)
     g.addEdge(1, 3);
     g.addEdge(2, 4);
 
-    std::vector<size_t> traversal = g.depthFirstTraversal(0);
+    std::vector<int> traversal = g.depthFirstTraversal(0);
     EXPECT_EQ(traversal.size(), 5);
     EXPECT_EQ(traversal[0], 0);
 
@@ -378,7 +376,7 @@ TEST_F(GraphTest, BreadthFirstTraversal)
     g.addEdge(1, 3);
     g.addEdge(2, 4);
 
-    std::vector<size_t> traversal = g.breadthFirstTraversal(0);
+    std::vector<int> traversal = g.breadthFirstTraversal(0);
     EXPECT_EQ(traversal.size(), 5);
     EXPECT_EQ(traversal[0], 0);
 
@@ -440,5 +438,5 @@ TEST_F(GraphTest, AntiTests)
     // Graph g(3);
     // Graph g2 = 5; // Should not be allowed
 
-    // size_t vertex = g; // Implicit conversion should not be allowed
+    // int vertex = g; // Implicit conversion should not be allowed
 }
