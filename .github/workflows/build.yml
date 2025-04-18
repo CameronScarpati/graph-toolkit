@@ -5,7 +5,7 @@ on: push
 jobs:
   ci:
     name: ${{ matrix.name }}
-    runs-on: self-hosted
+    runs-on: linux
     timeout-minutes: 5
 
     strategy:
@@ -36,7 +36,7 @@ jobs:
 
   linter:
     name: linter
-    runs-on: self-hosted
+    runs-on: linux
     timeout-minutes: 2
     container:
       image: nashtrash/isd-base
