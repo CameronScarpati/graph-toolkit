@@ -377,8 +377,3 @@ std::string Graph::toString() const
 
     return ss.str();
 }
-
-void Graph::prsize_t() const
-{
-    std::cout << toString();
-}

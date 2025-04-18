@@ -93,6 +93,8 @@ TEST_F(GraphTest, AddVertex)
 
     // Test-edge connections with new vertex
     EXPECT_NO_THROW({
+        EXPECT_FALSE(g.isAdjacent(0, 3));
+        EXPECT_FALSE(g.isAdjacent(3, 1));
         g.addEdge(0, 3);
         g.addEdge(3, 1);
         EXPECT_TRUE(g.isAdjacent(0, 3));

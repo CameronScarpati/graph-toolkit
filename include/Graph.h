@@ -208,11 +208,6 @@ public:
      * @return String representing the adjacency matrix.
      */
     std::string toString() const;
-
-    /**
-     * @brief Prsize_ts the graph's adjacency matrix to stdout.
-     */
-    void prsize_t() const;
 };
 
 #endif // HAMILTONIAN_CYCLE_FINDER_GRAPH_H
