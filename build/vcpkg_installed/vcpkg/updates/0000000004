@@ -1,8 +1,0 @@
-Package: gtest
-Version: 1.14.0
-Depends: vcpkg-cmake, vcpkg-cmake-config
-Architecture: arm64-osx
-Multi-Arch: same
-Abi: 6c84ec376ae76d74f2f92b34ebad5b06f6adec6da3cfc697cd7317122702a2f5
-Description: GoogleTest and GoogleMock testing frameworks
-Status: install ok half-installed
