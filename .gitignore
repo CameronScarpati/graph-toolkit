@@ -1,4 +1,6 @@
 .idea
+bin/
 cmake-build-debug
 cmake-build-debug-coverage
-bin
+test/*.js
+.DS_Store

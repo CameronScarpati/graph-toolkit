@@ -1,0 +1,50 @@
+name: Build and Run Automated Tests
+# This workflow is triggered on pushes to the repository.
+on: push
+
+jobs:
+  ci:
+    name: ${{ matrix.name }}
+    runs-on: linux
+    timeout-minutes: 5
+
+    strategy:
+      fail-fast: false
+      matrix:
+        name: [clang, gcc]
+        include:
+          - name: clang
+            cc: clang-14
+            cxx: clang++-14
+
+          - name: gcc
+            cc: gcc-12
+            cxx: g++-12
+    container:
+      image: nashtrash/isd-base
+    env:
+      CC: ${{ matrix.cc }}
+      CXX: ${{ matrix.cxx }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure.
+        run: cmake .
+      - name: Build.
+        run: cmake --build .
+      - name: Into bin and run
+        run: cd ./bin && ./testing
+
+  linter:
+    name: linter
+    runs-on: linux
+    timeout-minutes: 2
+    container:
+      image: nashtrash/isd-base
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set run permissions
+        run: chmod +x .github/workflows/linter.sh
+      - name: Fix some git issue
+        run: git config --global --add safe.directory '*'
+      - name: Run the linter
+        run: .github/workflows/linter.sh
