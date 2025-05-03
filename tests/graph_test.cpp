@@ -51,7 +51,7 @@ TEST_F(GraphTest, MoveConstructor)
 
     Graph g2(std::move(g1));
     EXPECT_EQ(g2.getNumVertices(), 4);
-    EXPECT_FALSE(g.getIsWeighted());
+    EXPECT_FALSE(g2.getIsWeighted());
     EXPECT_TRUE(g2.isAdjacent(0, 1));
     EXPECT_TRUE(g2.isAdjacent(1, 2));
     EXPECT_TRUE(g2.isAdjacent(2, 3));
@@ -70,7 +70,7 @@ TEST_F(GraphTest, CopyAssignment)
     Graph g2;
     g2 = g1;
     EXPECT_EQ(g2.getNumVertices(), 4);
-    EXPECT_FALSE(g.getIsWeighted());
+    EXPECT_FALSE(g2.getIsWeighted());
     EXPECT_TRUE(g2.isAdjacent(0, 1));
     EXPECT_TRUE(g2.isAdjacent(1, 2));
     EXPECT_TRUE(g2.isAdjacent(2, 3));
@@ -87,7 +87,7 @@ TEST_F(GraphTest, MoveAssignment)
     Graph g2;
     g2 = std::move(g1);
     EXPECT_EQ(g2.getNumVertices(), 4);
-    EXPECT_FALSE(g.getIsWeighted());
+    EXPECT_FALSE(g2.getIsWeighted());
     EXPECT_TRUE(g2.isAdjacent(0, 1));
     EXPECT_TRUE(g2.isAdjacent(1, 2));
     EXPECT_TRUE(g2.isAdjacent(2, 3));
@@ -230,6 +230,26 @@ TEST_F(GraphTest, IsStronglyConnected)
     g3.addEdge(0, 1);
     g3.addEdge(1, 2);
     EXPECT_FALSE(g3.isStronglyConnected());
+}
+
+TEST_F(GraphTest, AreVerticesStronglyConnected)
+{
+    // Isolated vertices - not strongly connected
+    Graph g1(3);
+    EXPECT_FALSE(g1.areVerticesStronglyConnected(0, 1));
+
+    // Strongly connected graph
+    Graph g2(3);
+    g2.addEdge(0, 1);
+    g2.addEdge(1, 2);
+    g2.addEdge(2, 0);
+    EXPECT_TRUE(g2.areVerticesStronglyConnected(0, 1));
+
+    // Not strongly connected
+    Graph g3(3);
+    g3.addEdge(0, 1);
+    g3.addEdge(1, 2);
+    EXPECT_FALSE(g3.areVerticesStronglyConnected(0, 1));
 }
 
 TEST_F(GraphTest, HasCycle)

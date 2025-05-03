@@ -182,6 +182,14 @@ public:
     bool isStronglyConnected() const;
 
     /**
+    * @brief Checks if two vertices are strongly connected in the directed graph.
+     * @param u The first vertex.
+     * @param v The second vertex.
+     * @return True if there is a path from u to v and a path from v to u; otherwise, false.
+     */
+    bool areVerticesStronglyConnected(size_t u, size_t v) const;
+
+    /**
      * @brief Checks if the graph contains a cycle.
      * @return true if graph has a cycle.
      */

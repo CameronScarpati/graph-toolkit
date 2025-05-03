@@ -103,7 +103,7 @@ Graph::Graph(size_t vertices, bool weighted)
 Graph::Graph(const Graph& other)
 {
     numVertices = other.numVertices;
-    isWeighted = other.isWeighted
+    isWeighted = other.isWeighted;
     adjacencyMatrix = other.adjacencyMatrix;
 }
 
@@ -120,7 +120,7 @@ Graph& Graph::operator=(const Graph& other)
 Graph::Graph(Graph&& other) noexcept
 {
     numVertices = other.numVertices;
-    isWeighted = other.isWeighted
+    isWeighted = other.isWeighted;
     adjacencyMatrix = std::move(other.adjacencyMatrix);
 
     other.numVertices = 0;
@@ -131,7 +131,7 @@ Graph& Graph::operator=(Graph&& other) noexcept
 {
     if (this != &other) {
         numVertices = other.numVertices;
-        isWeighted = other.isWeighted
+        isWeighted = other.isWeighted;
         adjacencyMatrix = std::move(other.adjacencyMatrix);
 
         other.numVertices = 0;
@@ -182,6 +182,10 @@ void Graph::addEdge(size_t from, size_t to, int weight)
 {
     if (!validVertex(from) || !validVertex(to))
         throw std::out_of_range("One of these indices is out of range.");
+
+    if (weight == 0) {
+        throw std::invalid_argument("Weight cannot equal zero.");
+    }
 
     adjacencyMatrix[from][to] = weight;
 }
@@ -259,6 +263,22 @@ bool Graph::isStronglyConnected() const
             return false;
     }
     return true;
+}
+
+bool Graph::areVerticesStronglyConnected(size_t u, size_t v) const
+{
+    if (!validVertex(u) || !validVertex(v))
+        throw std::out_of_range("One of these indices is out of range.");
+
+    // Check if there's a path from u to v
+    std::vector<int> fromU = depthFirstTraversal(u);
+    bool uToV = std::find(fromU.begin(), fromU.end(), v) != fromU.end();
+
+    // Check if there's a path from v to u
+    std::vector<int> fromV = depthFirstTraversal(v);
+    bool vToU = std::find(fromV.begin(), fromV.end(), u) != fromV.end();
+
+    return uToV && vToU;
 }
 
 bool Graph::hasCycle() const
