@@ -129,6 +129,13 @@ public:
     void addEdge(size_t from, size_t to, int weight);
 
     /**
+     * @brief Adds a directed edge between two vertices.
+     * @param from Source vertex.
+     * @param to Destination vertex.
+     */
+    void addUndirectedEdge(size_t from, size_t to, int weight);
+
+    /**
      * @brief Removes a directed edge between two vertices.
      * @param from Source vertex.
      * @param to Destination vertex.
@@ -154,6 +161,12 @@ public:
      * @return Boolean value of if the graph is weighted.
      */
     bool getIsWeighted() const;
+
+    /**
+     * @brief Gets the weight between two edges.
+     * @return Weight of the edge.
+     */
+    int getEdgeWeight(size_t from, size_t to) const;
 
     /**
      * @brief Gets all adjacent vertices of a vertex.
@@ -212,6 +225,15 @@ public:
      * @return true if a Hamiltonian cycle exists.
      */
     bool hasHamiltonianCycle() const;
+
+    /**
+     * @brief Computes the Minimum Spanning Tree (MST) of the graph using Prim's algorithm.
+     * @return A Graph of the MST
+     * 
+     * @note Assumes the graph is connected and undirected.
+     */
+    Graph minimumSpanningTree() const;
+
 
     /**
      * @brief Performs a depth-first traversal starting from a vertex.

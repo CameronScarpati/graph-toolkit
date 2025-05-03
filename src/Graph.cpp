@@ -190,6 +190,12 @@ void Graph::addEdge(size_t from, size_t to, int weight)
     adjacencyMatrix[from][to] = weight;
 }
 
+void Graph::addUndirectedEdge(size_t from, size_t to, int weight)
+{
+    addEdge(from, to, weight);
+    addEdge(to, from, weight);
+}
+
 void Graph::removeEdge(size_t from, size_t to)
 {
     if (!validVertex(from) || !validVertex(to))
@@ -214,6 +220,15 @@ size_t Graph::getNumVertices() const
 bool Graph::getIsWeighted() const
 {
     return isWeighted;
+}
+
+int Graph::getEdgeWeight(size_t from, size_t to) const
+{
+    if (!isAdjacent(from, to)) {
+        throw std::invalid_argument("These vertices are not adjacent.");
+    }
+
+    return adjacencyMatrix[from][to];
 }
 
 std::vector<int> Graph::getNeighbors(size_t vertex) const
@@ -369,6 +384,38 @@ bool Graph::hasHamiltonianCycle() const
 {
     return !findHamiltonianCycles().empty();
 }
+
+Graph Graph::minimumSpanningTree() const
+{
+    std::vector<bool> inMST(numVertices, false);
+    Graph mst(numVertices, true);  // Create a new weighted graph for the MST
+    using Edge = std::tuple<int, int, int>; // (weight, from, to)
+    auto cmp = [](const Edge &a, const Edge &b) { return std::get<0>(a) > std::get<0>(b); };
+    std::priority_queue<Edge, std::vector<Edge>, decltype(cmp)> pq(cmp);
+
+    // Start from vertex 0
+    inMST[0] = true;
+    for (size_t v = 0; v < numVertices; ++v) {
+        if (adjacencyMatrix[0][v] > 0)
+            pq.emplace(adjacencyMatrix[0][v], 0, v);
+    }
+
+    while (!pq.empty()) {
+        auto [weight, from, to] = pq.top(); pq.pop();
+        if (inMST[to]) continue;
+
+        inMST[to] = true;
+        mst.addEdge(from, to, weight);  // Add edge to the MST graph
+
+        for (size_t v = 0; v < numVertices; ++v) {
+            if (!inMST[v] && adjacencyMatrix[to][v] > 0)
+                pq.emplace(adjacencyMatrix[to][v], to, v);
+        }
+    }
+
+    return mst;  // Return the MST graph
+}
+
 
 std::vector<int> Graph::depthFirstTraversal(size_t startVertex) const
 {

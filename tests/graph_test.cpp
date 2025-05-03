@@ -371,6 +371,67 @@ TEST_F(GraphTest, HasHamiltonianCycle)
     EXPECT_FALSE(g4.hasHamiltonianCycle());
 }
 
+TEST_F(GraphTest, MinimumSpanningTree_Basic)
+{
+    Graph g(4, true); // weighted, undirected graph
+    g.addUndirectedEdge(0, 1, 1);
+    g.addUndirectedEdge(1, 2, 2);
+    g.addUndirectedEdge(2, 3, 3);
+    g.addUndirectedEdge(0, 3, 4);
+    g.addUndirectedEdge(1, 3, 5);
+
+    Graph mst = g.minimumSpanningTree();
+    EXPECT_EQ(mst.getNumVertices(), 4);
+    EXPECT_TRUE(mst.getIsWeighted());
+
+    // MST should have exactly V-1 = 3 edges
+    int edgeCount = 0;
+    for (size_t i = 0; i < mst.getNumVertices(); ++i) {
+        edgeCount += mst.getNeighbors(i).size();
+    }
+    EXPECT_EQ(edgeCount / 2, 3); // undirected, so each edge counted twice
+
+    // The total weight of MST should be 1.0 + 2.0 + 3.0 = 6.0
+    int totalWeight = 0;
+    for (int u = 0; u < 4; ++u) {
+        for (int v : mst.getNeighbors(u)) {
+            if (u < v) totalWeight += mst.getEdgeWeight(u, v);
+        }
+    }
+    EXPECT_DOUBLE_EQ(totalWeight, 6);
+}
+
+TEST_F(GraphTest, MinimumSpanningTree_Disconnected)
+{
+    Graph g(4, true);
+    g.addUndirectedEdge(0, 1, 1);
+    g.addUndirectedEdge(2, 3, 2);
+
+    // MST is undefined for disconnected graphs, expect an exception
+    EXPECT_THROW(g.minimumSpanningTree(), std::runtime_error);
+}
+
+TEST_F(GraphTest, MinimumSpanningTree_SingleVertex)
+{
+    Graph g(1, true);
+    Graph mst = g.minimumSpanningTree();
+
+    EXPECT_EQ(mst.getNumVertices(), 1);
+    EXPECT_TRUE(mst.getNeighbors(0).empty());
+}
+
+TEST_F(GraphTest, MinimumSpanningTree_TwoVertices)
+{
+    Graph g(2, true);
+    g.addUndirectedEdge(0, 1, 7);
+
+    Graph mst = g.minimumSpanningTree();
+    EXPECT_EQ(mst.getNumVertices(), 2);
+    EXPECT_TRUE(mst.isAdjacent(0, 1));
+    EXPECT_DOUBLE_EQ(mst.getEdgeWeight(0, 1), 7);
+}
+
+
 TEST_F(GraphTest, DepthFirstTraversal)
 {
     Graph g(5);
