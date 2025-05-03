@@ -9,12 +9,21 @@ TEST_F(GraphTest, BasicConstructor)
     EXPECT_NO_THROW({
         Graph g;
         EXPECT_EQ(g.getNumVertices(), 0);
+        EXPECT_FALSE(g.getIsWeighted());
     });
 
     EXPECT_NO_THROW({
         Graph g(5);
         EXPECT_EQ(g.getNumVertices(), 5);
+        EXPECT_FALSE(g.getIsWeighted());
     });
+
+    EXPECT_NO_THROW({
+        Graph g(7, true);
+        EXPECT_EQ(g.getNumVertices(), 7);
+        EXPECT_TRUE(g.getIsWeighted());
+    });
+
 }
 
 TEST_F(GraphTest, CopyConstructor)
@@ -26,6 +35,7 @@ TEST_F(GraphTest, CopyConstructor)
 
     Graph g2(g1);
     EXPECT_EQ(g2.getNumVertices(), 4);
+    EXPECT_FALSE(g2.getIsWeighted());
     EXPECT_TRUE(g2.isAdjacent(0, 1));
     EXPECT_TRUE(g2.isAdjacent(1, 2));
     EXPECT_TRUE(g2.isAdjacent(2, 3));
@@ -41,6 +51,7 @@ TEST_F(GraphTest, MoveConstructor)
 
     Graph g2(std::move(g1));
     EXPECT_EQ(g2.getNumVertices(), 4);
+    EXPECT_FALSE(g.getIsWeighted());
     EXPECT_TRUE(g2.isAdjacent(0, 1));
     EXPECT_TRUE(g2.isAdjacent(1, 2));
     EXPECT_TRUE(g2.isAdjacent(2, 3));
@@ -59,6 +70,7 @@ TEST_F(GraphTest, CopyAssignment)
     Graph g2;
     g2 = g1;
     EXPECT_EQ(g2.getNumVertices(), 4);
+    EXPECT_FALSE(g.getIsWeighted());
     EXPECT_TRUE(g2.isAdjacent(0, 1));
     EXPECT_TRUE(g2.isAdjacent(1, 2));
     EXPECT_TRUE(g2.isAdjacent(2, 3));
@@ -75,6 +87,7 @@ TEST_F(GraphTest, MoveAssignment)
     Graph g2;
     g2 = std::move(g1);
     EXPECT_EQ(g2.getNumVertices(), 4);
+    EXPECT_FALSE(g.getIsWeighted());
     EXPECT_TRUE(g2.isAdjacent(0, 1));
     EXPECT_TRUE(g2.isAdjacent(1, 2));
     EXPECT_TRUE(g2.isAdjacent(2, 3));
@@ -87,6 +100,7 @@ TEST_F(GraphTest, AddVertex)
 {
     Graph g(3);
     EXPECT_EQ(g.getNumVertices(), 3);
+
 
     g.addVertex();
     EXPECT_EQ(g.getNumVertices(), 4);

@@ -89,7 +89,13 @@ Graph::Graph()
 }
 
 Graph::Graph(size_t vertices)
-    : numVertices(vertices)
+    : numVertices(vertices), isWeighted(false)
+{
+    adjacencyMatrix.resize(vertices, std::vector<int>(vertices, 0));
+}
+
+Graph::Graph(size_t vertices, bool weighted)
+    : numVertices(vertices), isWeighted(weighted)
 {
     adjacencyMatrix.resize(vertices, std::vector<int>(vertices, 0));
 }
@@ -97,6 +103,7 @@ Graph::Graph(size_t vertices)
 Graph::Graph(const Graph& other)
 {
     numVertices = other.numVertices;
+    isWeighted = other.isWeighted
     adjacencyMatrix = other.adjacencyMatrix;
 }
 
@@ -104,6 +111,7 @@ Graph& Graph::operator=(const Graph& other)
 {
     if (this != &other) {
         numVertices = other.numVertices;
+        isWeighted = other.isWeighted;
         adjacencyMatrix = other.adjacencyMatrix;
     }
     return *this;
@@ -112,6 +120,7 @@ Graph& Graph::operator=(const Graph& other)
 Graph::Graph(Graph&& other) noexcept
 {
     numVertices = other.numVertices;
+    isWeighted = other.isWeighted
     adjacencyMatrix = std::move(other.adjacencyMatrix);
 
     other.numVertices = 0;
@@ -122,6 +131,7 @@ Graph& Graph::operator=(Graph&& other) noexcept
 {
     if (this != &other) {
         numVertices = other.numVertices;
+        isWeighted = other.isWeighted
         adjacencyMatrix = std::move(other.adjacencyMatrix);
 
         other.numVertices = 0;
@@ -145,6 +155,8 @@ void Graph::addVertex()
         adjacencyMatrix[i].push_back(0);
 }
 
+
+
 void Graph::removeVertex(size_t vertex)
 {
     if (!validVertex(vertex))
@@ -166,6 +178,14 @@ void Graph::addEdge(size_t from, size_t to)
     adjacencyMatrix[from][to] = 1;
 }
 
+void Graph::addEdge(size_t from, size_t to, int weight)
+{
+    if (!validVertex(from) || !validVertex(to))
+        throw std::out_of_range("One of these indices is out of range.");
+
+    adjacencyMatrix[from][to] = weight;
+}
+
 void Graph::removeEdge(size_t from, size_t to)
 {
     if (!validVertex(from) || !validVertex(to))
@@ -185,6 +205,11 @@ bool Graph::isAdjacent(size_t v1, size_t v2) const
 size_t Graph::getNumVertices() const
 {
     return numVertices;
+}
+
+bool Graph::getIsWeighted() const
+{
+    return isWeighted;
 }
 
 std::vector<int> Graph::getNeighbors(size_t vertex) const

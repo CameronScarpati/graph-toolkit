@@ -12,6 +12,7 @@
 class Graph {
 private:
     size_t numVertices;
+    bool isWeighted;
     std::vector<std::vector<int>> adjacencyMatrix;
 
     /**
@@ -64,6 +65,14 @@ public:
     explicit Graph(size_t vertices);
 
     /**
+     * @brief Constructor creating a graph with specified number of vertices.
+     * @param vertices Number of vertices to initialize.
+     * @param weighted Is a weighted graph or not.
+     */
+    explicit Graph(size_t vertices, bool weighted);
+
+
+    /**
      * @brief Copy constructor.
      * @param other Graph to copy.
      */
@@ -113,6 +122,13 @@ public:
     void addEdge(size_t from, size_t to);
 
     /**
+     * @brief Adds a directed edge between two vertices.
+     * @param from Source vertex.
+     * @param to Destination vertex.
+     */
+    void addEdge(size_t from, size_t to, int weight);
+
+    /**
      * @brief Removes a directed edge between two vertices.
      * @param from Source vertex.
      * @param to Destination vertex.
@@ -132,6 +148,12 @@ public:
      * @return Number of vertices.
      */
     size_t getNumVertices() const;
+
+    /**
+     * @brief Gets if the graph is weighted or not.
+     * @return Boolean value of if the graph is weighted.
+     */
+    bool getIsWeighted() const;
 
     /**
      * @brief Gets all adjacent vertices of a vertex.
