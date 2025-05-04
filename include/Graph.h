@@ -1,6 +1,7 @@
 #ifndef HAMILTONIAN_CYCLE_FINDER_GRAPH_H
 #define HAMILTONIAN_CYCLE_FINDER_GRAPH_H
 
+#include <cmath>
 #include <iostream>
 #include <queue>
 #include <sstream>
@@ -12,6 +13,7 @@
 class Graph {
 private:
     size_t numVertices;
+    bool isWeighted;
     std::vector<std::vector<int>> adjacencyMatrix;
 
     /**
@@ -64,6 +66,13 @@ public:
     explicit Graph(size_t vertices);
 
     /**
+     * @brief Constructor creating a graph with specified number of vertices.
+     * @param vertices Number of vertices to initialize.
+     * @param weighted Is a weighted graph or not.
+     */
+    explicit Graph(size_t vertices, bool weighted);
+
+    /**
      * @brief Copy constructor.
      * @param other Graph to copy.
      */
@@ -113,6 +122,20 @@ public:
     void addEdge(size_t from, size_t to);
 
     /**
+     * @brief Adds a directed edge between two vertices.
+     * @param from Source vertex.
+     * @param to Destination vertex.
+     */
+    void addEdge(size_t from, size_t to, int weight);
+
+    /**
+     * @brief Adds a directed edge between two vertices.
+     * @param from Source vertex.
+     * @param to Destination vertex.
+     */
+    void addUndirectedEdge(size_t from, size_t to, int weight);
+
+    /**
      * @brief Removes a directed edge between two vertices.
      * @param from Source vertex.
      * @param to Destination vertex.
@@ -132,6 +155,18 @@ public:
      * @return Number of vertices.
      */
     size_t getNumVertices() const;
+
+    /**
+     * @brief Gets if the graph is weighted or not.
+     * @return Boolean value of if the graph is weighted.
+     */
+    bool getIsWeighted() const;
+
+    /**
+     * @brief Gets the weight between two edges.
+     * @return Weight of the edge.
+     */
+    int getEdgeWeight(size_t from, size_t to) const;
 
     /**
      * @brief Gets all adjacent vertices of a vertex.
@@ -160,6 +195,14 @@ public:
     bool isStronglyConnected() const;
 
     /**
+     * @brief Checks if two vertices are strongly connected in the directed graph.
+     * @param u The first vertex.
+     * @param v The second vertex.
+     * @return True if there is a path from u to v and a path from v to u; otherwise, false.
+     */
+    bool areVerticesStronglyConnected(size_t u, size_t v) const;
+
+    /**
      * @brief Checks if the graph contains a cycle.
      * @return true if graph has a cycle.
      */
@@ -182,6 +225,22 @@ public:
      * @return true if a Hamiltonian cycle exists.
      */
     bool hasHamiltonianCycle() const;
+
+    /**
+     * @brief Computes the Minimum Spanning Tree (MST) of the graph using Prim's algorithm.
+     * @return A Graph of the MST
+     *
+     * @note Assumes the graph is connected and undirected.
+     */
+    Graph minimumSpanningTree() const;
+
+    /**
+     * @brief Finds the shortest path to visit all vertices.
+     * @return A vector of the order of vertices in the path.
+     *
+     * @note Assumes the graph is connected and undirected.
+     */
+    std::pair<std::vector<int>, int> travelingSalesman() const;
 
     /**
      * @brief Performs a depth-first traversal starting from a vertex.

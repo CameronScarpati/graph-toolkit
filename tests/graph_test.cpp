@@ -9,11 +9,19 @@ TEST_F(GraphTest, BasicConstructor)
     EXPECT_NO_THROW({
         Graph g;
         EXPECT_EQ(g.getNumVertices(), 0);
+        EXPECT_FALSE(g.getIsWeighted());
     });
 
     EXPECT_NO_THROW({
         Graph g(5);
         EXPECT_EQ(g.getNumVertices(), 5);
+        EXPECT_FALSE(g.getIsWeighted());
+    });
+
+    EXPECT_NO_THROW({
+        Graph g(7, true);
+        EXPECT_EQ(g.getNumVertices(), 7);
+        EXPECT_TRUE(g.getIsWeighted());
     });
 }
 
@@ -26,6 +34,7 @@ TEST_F(GraphTest, CopyConstructor)
 
     Graph g2(g1);
     EXPECT_EQ(g2.getNumVertices(), 4);
+    EXPECT_FALSE(g2.getIsWeighted());
     EXPECT_TRUE(g2.isAdjacent(0, 1));
     EXPECT_TRUE(g2.isAdjacent(1, 2));
     EXPECT_TRUE(g2.isAdjacent(2, 3));
@@ -41,6 +50,7 @@ TEST_F(GraphTest, MoveConstructor)
 
     Graph g2(std::move(g1));
     EXPECT_EQ(g2.getNumVertices(), 4);
+    EXPECT_FALSE(g2.getIsWeighted());
     EXPECT_TRUE(g2.isAdjacent(0, 1));
     EXPECT_TRUE(g2.isAdjacent(1, 2));
     EXPECT_TRUE(g2.isAdjacent(2, 3));
@@ -59,6 +69,7 @@ TEST_F(GraphTest, CopyAssignment)
     Graph g2;
     g2 = g1;
     EXPECT_EQ(g2.getNumVertices(), 4);
+    EXPECT_FALSE(g2.getIsWeighted());
     EXPECT_TRUE(g2.isAdjacent(0, 1));
     EXPECT_TRUE(g2.isAdjacent(1, 2));
     EXPECT_TRUE(g2.isAdjacent(2, 3));
@@ -75,6 +86,7 @@ TEST_F(GraphTest, MoveAssignment)
     Graph g2;
     g2 = std::move(g1);
     EXPECT_EQ(g2.getNumVertices(), 4);
+    EXPECT_FALSE(g2.getIsWeighted());
     EXPECT_TRUE(g2.isAdjacent(0, 1));
     EXPECT_TRUE(g2.isAdjacent(1, 2));
     EXPECT_TRUE(g2.isAdjacent(2, 3));
@@ -218,6 +230,26 @@ TEST_F(GraphTest, IsStronglyConnected)
     EXPECT_FALSE(g3.isStronglyConnected());
 }
 
+TEST_F(GraphTest, AreVerticesStronglyConnected)
+{
+    // Isolated vertices - not strongly connected
+    Graph g1(3);
+    EXPECT_FALSE(g1.areVerticesStronglyConnected(0, 1));
+
+    // Strongly connected graph
+    Graph g2(3);
+    g2.addEdge(0, 1);
+    g2.addEdge(1, 2);
+    g2.addEdge(2, 0);
+    EXPECT_TRUE(g2.areVerticesStronglyConnected(0, 1));
+
+    // Not strongly connected
+    Graph g3(3);
+    g3.addEdge(0, 1);
+    g3.addEdge(1, 2);
+    EXPECT_FALSE(g3.areVerticesStronglyConnected(0, 1));
+}
+
 TEST_F(GraphTest, HasCycle)
 {
     // No cycle
@@ -335,6 +367,90 @@ TEST_F(GraphTest, HasHamiltonianCycle)
     g4.addEdge(0, 1);
     g4.addEdge(1, 2);
     EXPECT_FALSE(g4.hasHamiltonianCycle());
+}
+
+TEST_F(GraphTest, MinimumSpanningTree_Basic)
+{
+    Graph g(4, true); // weighted, undirected graph
+    g.addUndirectedEdge(0, 1, 1);
+    g.addUndirectedEdge(1, 2, 2);
+    g.addUndirectedEdge(2, 3, 3);
+    g.addUndirectedEdge(0, 3, 4);
+    g.addUndirectedEdge(1, 3, 5);
+
+    Graph mst = g.minimumSpanningTree();
+    EXPECT_EQ(mst.getNumVertices(), 4);
+    EXPECT_TRUE(mst.getIsWeighted());
+
+    // MST should have exactly V-1 = 3 edges
+    int edgeCount = 0;
+    for (size_t i = 0; i < mst.getNumVertices(); ++i)
+        edgeCount += mst.getNeighbors(i).size();
+    EXPECT_EQ(edgeCount / 2, 3); // undirected, so each edge counted twice
+
+    // The total weight of MST should be 1.0 + 2.0 + 3.0 = 6.0
+    int totalWeight = 0;
+    for (int u = 0; u < 4; ++u) {
+        for (int v : mst.getNeighbors(u)) {
+            if (u < v)
+                totalWeight += mst.getEdgeWeight(u, v);
+        }
+    }
+    EXPECT_DOUBLE_EQ(totalWeight, 6);
+}
+
+TEST_F(GraphTest, MinimumSpanningTree_Disconnected)
+{
+    Graph g(4, true);
+    g.addUndirectedEdge(0, 1, 1);
+    g.addUndirectedEdge(2, 3, 2);
+
+    // MST is undefined for disconnected graphs, expect an exception
+    EXPECT_THROW(g.minimumSpanningTree(), std::runtime_error);
+}
+
+TEST_F(GraphTest, MinimumSpanningTree_SingleVertex)
+{
+    Graph g(1, true);
+    Graph mst = g.minimumSpanningTree();
+
+    EXPECT_EQ(mst.getNumVertices(), 1);
+    EXPECT_TRUE(mst.getNeighbors(0).empty());
+}
+
+TEST_F(GraphTest, MinimumSpanningTree_TwoVertices)
+{
+    Graph g(2, true);
+    g.addUndirectedEdge(0, 1, 7);
+
+    Graph mst = g.minimumSpanningTree();
+    EXPECT_EQ(mst.getNumVertices(), 2);
+    EXPECT_TRUE(mst.isAdjacent(0, 1));
+    EXPECT_DOUBLE_EQ(mst.getEdgeWeight(0, 1), 7);
+}
+
+TEST_F(GraphTest, TravelingSalesman_Basic)
+{
+    Graph g(4, true); // weighted graph
+
+    g.addUndirectedEdge(0, 1, 10);
+    g.addUndirectedEdge(1, 2, 15);
+    g.addUndirectedEdge(2, 3, 20);
+    g.addUndirectedEdge(3, 0, 25);
+    g.addUndirectedEdge(0, 2, 35);
+    g.addUndirectedEdge(1, 3, 30);
+
+    // A valid optimal TSP path here is 0 → 1 → 2 → 3 → 0 with cost 10 + 15 + 20 + 25 = 70
+    std::pair<std::vector<int>, int> tspResult = g.travelingSalesman();
+
+    std::vector<int> path = tspResult.first;
+    int cost = tspResult.second;
+
+    // Path should be a cycle (start == end), and visit all vertices once
+    EXPECT_EQ(path.front(), path.back());
+    EXPECT_EQ(path.size(), g.getNumVertices() + 1);
+
+    EXPECT_EQ(cost, 70);
 }
 
 TEST_F(GraphTest, DepthFirstTraversal)
