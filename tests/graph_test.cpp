@@ -542,3 +542,190 @@ TEST_F(GraphTest, AlgorithmPerformanceComparison)
                   << std::endl;
     }
 }
+
+// ============================================================
+// Exception Tests — verify every throw path
+// ============================================================
+TEST_F(GraphTest, ExceptionTests)
+{
+    Graph g(3, true);
+    g.addEdge(0, 1, 5);
+    g.addEdge(1, 2, 3);
+
+    // removeVertex out of range
+    EXPECT_THROW(g.removeVertex(999), std::out_of_range);
+
+    // addEdge out of range
+    EXPECT_THROW(g.addEdge(999, 0), std::out_of_range);
+    EXPECT_THROW(g.addEdge(0, 999), std::out_of_range);
+
+    // addEdge with invalid weight
+    EXPECT_THROW(g.addEdge(0, 1, -5), std::invalid_argument);
+    EXPECT_THROW(g.addEdge(0, 1, 0), std::invalid_argument);
+
+    // removeEdge out of range
+    EXPECT_THROW(g.removeEdge(999, 0), std::out_of_range);
+
+    // isAdjacent out of range
+    EXPECT_THROW(g.isAdjacent(999, 0), std::out_of_range);
+
+    // getEdgeWeight on non-adjacent vertices
+    EXPECT_THROW(g.getEdgeWeight(0, 2), std::invalid_argument);
+
+    // getNeighbors out of range
+    EXPECT_THROW(g.getNeighbors(999), std::out_of_range);
+
+    // getDegree out of range
+    EXPECT_THROW(g.getDegree(999), std::out_of_range);
+
+    // Traversals out of range
+    EXPECT_THROW(g.depthFirstTraversal(999), std::out_of_range);
+    EXPECT_THROW(g.breadthFirstTraversal(999), std::out_of_range);
+
+    // areVerticesStronglyConnected out of range
+    EXPECT_THROW(g.areVerticesStronglyConnected(999, 0), std::out_of_range);
+
+    // minimumSpanningTree on disconnected graph
+    {
+        Graph disconnected(3, true);
+        // No edges → disconnected
+        EXPECT_THROW(disconnected.minimumSpanningTree(), std::runtime_error);
+    }
+
+    // minimumSpanningTree on unweighted graph
+    {
+        Graph unweighted(3, false);
+        unweighted.addEdge(0, 1);
+        unweighted.addEdge(1, 2);
+        unweighted.addEdge(0, 2);
+        EXPECT_THROW(unweighted.minimumSpanningTree(), std::runtime_error);
+    }
+
+    // travelingSalesman on incomplete graph
+    {
+        Graph incomplete(3, true);
+        incomplete.addEdge(0, 1, 1);
+        EXPECT_THROW(incomplete.travelingSalesman(), std::invalid_argument);
+    }
+
+    // travelingSalesman on graph with < 2 vertices
+    {
+        Graph tiny(1);
+        EXPECT_THROW(tiny.travelingSalesman(), std::invalid_argument);
+    }
+}
+
+// ============================================================
+// Empty Graph Behavior
+// ============================================================
+TEST_F(GraphTest, EmptyGraphBehavior)
+{
+    Graph g;
+
+    EXPECT_EQ(g.getNumVertices(), 0u);
+    EXPECT_FALSE(g.isConnected());
+    EXPECT_TRUE(g.isComplete());
+    EXPECT_FALSE(g.hasCycle());
+    EXPECT_TRUE(g.isStronglyConnected());
+    EXPECT_TRUE(g.findHamiltonianCycles().empty());
+}
+
+// ============================================================
+// Single Vertex Graph
+// ============================================================
+TEST_F(GraphTest, SingleVertexGraph)
+{
+    Graph g(1);
+
+    EXPECT_TRUE(g.isConnected());
+    EXPECT_TRUE(g.isComplete());
+    EXPECT_FALSE(g.hasCycle());
+    EXPECT_EQ(g.getDegree(0), 0u);
+    EXPECT_TRUE(g.getNeighbors(0).empty());
+
+    auto dfs = g.depthFirstTraversal(0);
+    ASSERT_EQ(dfs.size(), 1u);
+    EXPECT_EQ(dfs[0], 0);
+
+    auto bfs = g.breadthFirstTraversal(0);
+    ASSERT_EQ(bfs.size(), 1u);
+    EXPECT_EQ(bfs[0], 0);
+}
+
+// ============================================================
+// Disconnected Graph Behavior
+// ============================================================
+TEST_F(GraphTest, DisconnectedGraphBehavior)
+{
+    Graph g(4);
+    g.addEdge(0, 1);
+    g.addEdge(1, 0);
+    g.addEdge(2, 3);
+    g.addEdge(3, 2);
+
+    EXPECT_FALSE(g.isConnected());
+
+    // DFS from vertex 0 should only reach component {0, 1}
+    auto dfs = g.depthFirstTraversal(0);
+    EXPECT_EQ(dfs.size(), 2u);
+    for (int v : dfs) {
+        EXPECT_TRUE(v == 0 || v == 1);
+    }
+
+    // BFS from vertex 2 should only reach component {2, 3}
+    auto bfs = g.breadthFirstTraversal(2);
+    EXPECT_EQ(bfs.size(), 2u);
+    for (int v : bfs) {
+        EXPECT_TRUE(v == 2 || v == 3);
+    }
+}
+
+// ============================================================
+// Move Semantics
+// ============================================================
+TEST_F(GraphTest, MoveSemantics)
+{
+    // Move construction
+    {
+        Graph original(5);
+        original.addEdge(0, 1);
+        Graph moved(std::move(original));
+
+        EXPECT_EQ(moved.getNumVertices(), 5u);
+        EXPECT_TRUE(moved.isAdjacent(0, 1));
+        EXPECT_EQ(original.getNumVertices(), 0u);
+    }
+
+    // Move assignment
+    {
+        Graph original(4);
+        original.addEdge(1, 2);
+        Graph target;
+        target = std::move(original);
+
+        EXPECT_EQ(target.getNumVertices(), 4u);
+        EXPECT_TRUE(target.isAdjacent(1, 2));
+        EXPECT_EQ(original.getNumVertices(), 0u);
+    }
+}
+
+// ============================================================
+// Copy Independence
+// ============================================================
+TEST_F(GraphTest, CopyIndependence)
+{
+    Graph original(3, true);
+    original.addEdge(0, 1, 10);
+    original.addEdge(1, 2, 20);
+
+    Graph copy(original);
+
+    // Modify the copy
+    copy.addEdge(0, 2, 30);
+    copy.removeEdge(0, 1);
+
+    // Original should be unchanged
+    EXPECT_TRUE(original.isAdjacent(0, 1));
+    EXPECT_EQ(original.getEdgeWeight(0, 1), 10);
+    EXPECT_FALSE(original.isAdjacent(0, 2));
+}
