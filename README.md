@@ -52,8 +52,8 @@ To set up the project locally, follow these steps.
 
 Ensure you have the following installed:
 
-* **C++ Compiler**: A compiler that supports C++17 or later.
-* **CMake**: Version 3.15 or newer.
+* **C++ Compiler**: Clang 14+ or GCC 12+ with C++20 support.
+* **CMake**: Version 3.27 or newer.
   ```sh
   # For Ubuntu
   sudo apt-get update
@@ -71,37 +71,38 @@ Ensure you have the following installed:
    cd graph-toolkit
    ```
 
-2. **Create a build directory and navigate into it**:
+2. **Configure and build**:
    ```sh
-   mkdir build && cd build
-   ```
-
-3. **Configure the project using CMake**:
-   ```sh
-   cmake ..
-   ```
-
-4. **Build the project**:
-   ```sh
-   cmake --build .
+   cmake -B build -S .
+   cmake --build build
    ```
 
 <p>(<a href="#readme-top">back to top</a>)</p>
 
 ## Usage
 
-After building the project, you can run the test executable to verify the functionality of the graph library:
+After building, run the test suite:
 
 ```sh
-./hamiltonian_cycle_finder
+cd build && ctest --output-on-failure
 ```
+
+Or run the test binary directly:
+
+```sh
+./bin/testing
+```
+
+For the full API reference, see [`docs/API.md`](docs/API.md).
 
 The test suite covers:
 
-- Graph creation and manipulation
+- Graph creation, copy, and move semantics
 - Depth-first and breadth-first traversals
 - Cycle detection and connectivity checks
-- Hamiltonian cycle detection
+- Hamiltonian cycle detection and enumeration
+- Minimum Spanning Tree (Prim's algorithm)
+- Traveling Salesman Problem (brute-force)
 
 <p>(<a href="#readme-top">back to top</a>)</p>
 
@@ -111,9 +112,12 @@ The test suite covers:
 - [x] Develop traversal algorithms (DFS and BFS)
 - [x] Implement connectivity and cycle detection
 - [x] Integrate Hamiltonian cycle detection
+- [x] Add weighted and undirected edge support
+- [x] Implement Minimum Spanning Tree (Prim's algorithm)
+- [x] Implement Traveling Salesman Problem solver
+- [ ] Add Dijkstra's shortest path algorithm
+- [ ] Add topological sort (public API)
 - [ ] Optimize performance for large graphs
-- [ ] Extend support for weighted and undirected graphs
-- [ ] Add more graph operations for further learning.
 
 See the [open issues](https://github.com/CameronScarpati/graph-toolkit/issues) for a full list of proposed features and known issues.
 
@@ -121,19 +125,7 @@ See the [open issues](https://github.com/CameronScarpati/graph-toolkit/issues) f
 
 ## Contributing
 
-Contributions are welcome! If you have suggestions for improving the library or adding new features, please fork the repository and create a pull request.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-### Development Areas
-
-- **Algorithm Enhancements**: Improve Hamiltonian cycle detection and traversal efficiency (pruning)
-- **Testing**: Enhance the test suite for broader average and edge cases
-- **Documentation**: Improve usage examples and documentation clarity
+Contributions are welcome! Please see [`CONTRIBUTING.md`](CONTRIBUTING.md) for guidelines on development setup, code style, and the pull request process.
 
 <p>(<a href="#readme-top">back to top</a>)</p>
 

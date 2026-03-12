@@ -1,6 +1,18 @@
-.idea
+# Build directories
+build/
 bin/
-cmake-build-debug
-cmake-build-debug-coverage
-test/*.js
+cmake-build-*/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
 .DS_Store
+Thumbs.db
+
+# Test artifacts
+test/*.js
