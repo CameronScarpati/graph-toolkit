@@ -2,7 +2,7 @@
 
 bool Graph::validVertex(size_t vertex) const noexcept
 {
-    return vertex >= 0 && vertex < numVertices;
+    return vertex < numVertices;
 }
 
 std::vector<int> Graph::depthFirstTraversalHelper(
