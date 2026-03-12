@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-03-12
+
+### Added
+
+- Dijkstra's shortest path algorithm (O(E log V) with min-heap)
+- Bellman-Ford shortest path algorithm (supports negative weights)
+- Topological sort via Kahn's algorithm
+- Complete API documentation for the Algorithms module in `docs/API.md`
+
+### Fixed
+
+- Header guard renamed from `HAMILTONIAN_CYCLE_FINDER_GRAPH_H` to `GRAPH_TOOLKIT_GRAPH_H`
+- Removed duplicate `#include <algorithm>` in `Graph.cpp`
+- Fixed CMake `target_include_directories` using generator expressions for proper build/install separation
+- Corrected `getEdgeWeight` documentation (throws on non-adjacent, not returns 0)
+
 ## [0.1.0] - 2025-05-05
 
 ### Added

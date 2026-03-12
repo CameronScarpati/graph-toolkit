@@ -1,7 +1,5 @@
 #include "../include/Graph.h"
 #include <algorithm>
-
-#include <algorithm>
 #include <limits>
 
 bool Graph::validVertex(size_t vertex) const noexcept

@@ -26,7 +26,11 @@ add_library(graph-toolkit-lib
         src/Graph.cpp
         src/Algorithms.cpp
 )
-target_include_directories(graph-toolkit-lib PUBLIC include/)
+target_include_directories(graph-toolkit-lib
+        PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/graph-toolkit>
+)
 
 # Make the project root directory the working directory when we run
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
