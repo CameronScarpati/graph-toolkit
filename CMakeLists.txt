@@ -29,6 +29,7 @@ set(SOURCE_FILES
         src/Graph.cpp
         tests/main.cpp
         tests/graph_test.cpp
+        tests/mst_benchmark_test.cpp
 )
 
 # Make the project root directory the working directory when we run

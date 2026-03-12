@@ -2,7 +2,7 @@
 
 bool Graph::validVertex(size_t vertex) const noexcept
 {
-    return vertex >= 0 && vertex < numVertices;
+    return vertex < numVertices;
 }
 
 std::vector<int> Graph::depthFirstTraversalHelper(
@@ -403,17 +403,17 @@ Graph Graph::minimumSpanningTree() const
     std::vector<int> parent(numVertices, -1); // Track the parent of each vertex in the MST
     key[0] = 0;
 
-    for (size_t count = 0; count < numVertices; ++count) {
-        // Find vertex with minimum key value from the set of vertices not yet included in MST
-        int minKey = std::numeric_limits<int>::max();
-        int u = -1;
+    // Min-heap: (weight, vertex) — O(E log V) instead of O(V²)
+    using PQEntry = std::pair<int, size_t>;
+    std::priority_queue<PQEntry, std::vector<PQEntry>, std::greater<>> pq;
+    pq.push({0, 0});
 
-        for (size_t v = 0; v < numVertices; ++v) {
-            if (!inMST[v] && key[v] < minKey) {
-                minKey = key[v];
-                u = v;
-            }
-        }
+    while (!pq.empty()) {
+        auto [w, u] = pq.top();
+        pq.pop();
+
+        if (inMST[u])
+            continue;
 
         inMST[u] = true;
 
@@ -422,13 +422,10 @@ Graph Graph::minimumSpanningTree() const
 
         // Update key values and parent indices of adjacent vertices
         for (size_t v = 0; v < numVertices; ++v) {
-            // Update only if:
-            // 1. There's an edge from u to v
-            // 2. V is not in MST
-            // 3. The Weight of u-v is smaller than the current key value of v
             if (adjacencyMatrix[u][v] > 0 && !inMST[v] && adjacencyMatrix[u][v] < key[v]) {
                 parent[v] = u;
                 key[v] = adjacencyMatrix[u][v];
+                pq.push({key[v], v});
             }
         }
     }
