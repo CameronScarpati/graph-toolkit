@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.27)
-project(graph-toolkit)
+project(graph-toolkit VERSION 0.1.0 LANGUAGES CXX)
 
 # Set compiler flags
 set(CMAKE_CXX_STANDARD 20)
@@ -21,24 +21,46 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-# Include project headers
-include_directories(./include)
-
-# Define the source files and dependencies for the executable
-set(SOURCE_FILES
+# Library target
+add_library(graph-toolkit-lib
         src/Graph.cpp
         src/Algorithms.cpp
+)
+target_include_directories(graph-toolkit-lib PUBLIC include/)
+
+# Make the project root directory the working directory when we run
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+
+# Create CI testing application
+add_executable(testing
         tests/main.cpp
         tests/graph_test.cpp
         tests/mst_benchmark_test.cpp
         tests/algorithms_test.cpp
 )
 
-# Make the project root directory the working directory when we run
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+# Link against the library and GTest
+target_link_libraries(testing PRIVATE graph-toolkit-lib gtest gtest_main)
 
-# Create CI testing application
-add_executable(testing ${SOURCE_FILES})
+# Register tests with CTest
+include(GoogleTest)
+gtest_discover_tests(testing)
 
-# Link against GTest
-target_link_libraries(testing PRIVATE gtest gtest_main)
+# Install targets
+include(GNUInstallDirs)
+
+install(TARGETS graph-toolkit-lib
+        EXPORT graph-toolkit-targets
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+install(DIRECTORY include/
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/graph-toolkit
+)
+
+install(EXPORT graph-toolkit-targets
+        FILE graph-toolkit-targets.cmake
+        NAMESPACE graph-toolkit::
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/graph-toolkit
+)
