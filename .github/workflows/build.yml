@@ -1,12 +1,11 @@
 name: Build and Run Automated Tests
-# This workflow is triggered on pushes to the repository.
 on: push
 
 jobs:
   ci:
     name: ${{ matrix.name }}
-    runs-on: linux
-    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     strategy:
       fail-fast: false
@@ -14,37 +13,108 @@ jobs:
         name: [clang, gcc]
         include:
           - name: clang
-            cc: clang-14
-            cxx: clang++-14
+            cc: clang-17
+            cxx: clang++-17
+            packages: clang-17
 
           - name: gcc
-            cc: gcc-12
-            cxx: g++-12
-    container:
-      image: nashtrash/isd-base
+            cc: gcc-13
+            cxx: g++-13
+            packages: gcc-13 g++-13
+
     env:
       CC: ${{ matrix.cc }}
       CXX: ${{ matrix.cxx }}
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Configure.
-        run: cmake .
-      - name: Build.
-        run: cmake --build .
-      - name: Into bin and run
-        run: cd ./bin && ./testing
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ${{ matrix.packages }}
+
+      - name: Cache GTest FetchContent
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: build/_deps
+          key: gtest-${{ runner.os }}-${{ matrix.name }}-${{ hashFiles('CMakeLists.txt') }}
+          restore-keys: |
+            gtest-${{ runner.os }}-${{ matrix.name }}-
+
+      - name: Configure
+        run: cmake -B build -S .
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Test
+        run: cd build && ctest --output-on-failure
+
+  coverage:
+    name: code-coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      CC: gcc-13
+      CXX: g++-13
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-13 g++-13 lcov
+
+      - name: Cache GTest FetchContent
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: build/_deps
+          key: gtest-${{ runner.os }}-coverage-${{ hashFiles('CMakeLists.txt') }}
+          restore-keys: |
+            gtest-${{ runner.os }}-coverage-
+
+      - name: Configure with coverage flags
+        run: cmake -B build -S . -DCMAKE_CXX_FLAGS="--coverage -fprofile-arcs -ftest-coverage"
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Test
+        run: cd build && ctest --output-on-failure
+
+      - name: Generate coverage report
+        run: |
+          lcov --capture --directory build --output-file coverage.info --gcov-tool gcov-13
+          lcov --remove coverage.info '/usr/*' '*/build/_deps/*' --output-file coverage.info
+          lcov --list coverage.info
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: coverage-report
+          path: coverage.info
 
   linter:
     name: linter
-    runs-on: linux
+    runs-on: ubuntu-latest
     timeout-minutes: 2
-    container:
-      image: nashtrash/isd-base
+
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install clang-format
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-format-17
+
       - name: Set run permissions
         run: chmod +x .github/workflows/linter.sh
+
       - name: Fix some git issue
         run: git config --global --add safe.directory '*'
+
       - name: Run the linter
         run: .github/workflows/linter.sh

@@ -1,5 +1,8 @@
 #!/bin/bash
-find . -regex '.*\.\(h\|cpp\)' -exec clang-format-14 -i -style=file {} \; \
+CLANG_FORMAT_VERSION="${CLANG_FORMAT_VERSION:-17}"
+CLANG_FORMAT="clang-format-${CLANG_FORMAT_VERSION}"
+
+find . -regex '.*\.\(h\|cpp\)' -exec ${CLANG_FORMAT} -i -style=file {} \; \
 && git diff --quiet \
 || {
   for i in {{1..80}}; do echo -n = ; done
