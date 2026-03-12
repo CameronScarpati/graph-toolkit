@@ -1,7 +1,5 @@
 #include "../include/Graph.h"
 #include <algorithm>
-
-#include <algorithm>
 #include <limits>
 
 bool Graph::validVertex(size_t vertex) const noexcept
@@ -410,7 +408,7 @@ Graph Graph::minimumSpanningTree() const
     // Min-heap: (weight, vertex) — O(E log V) instead of O(V²)
     using PQEntry = std::pair<int, size_t>;
     std::priority_queue<PQEntry, std::vector<PQEntry>, std::greater<>> pq;
-    pq.push({0, 0});
+    pq.push({ 0, 0 });
 
     while (!pq.empty()) {
         auto [w, u] = pq.top();
@@ -429,7 +427,7 @@ Graph Graph::minimumSpanningTree() const
             if (adjacencyMatrix[u][v] > 0 && !inMST[v] && adjacencyMatrix[u][v] < key[v]) {
                 parent[v] = u;
                 key[v] = adjacencyMatrix[u][v];
-                pq.push({key[v], v});
+                pq.push({ key[v], v });
             }
         }
     }

@@ -1,5 +1,5 @@
-#ifndef HAMILTONIAN_CYCLE_FINDER_GRAPH_H
-#define HAMILTONIAN_CYCLE_FINDER_GRAPH_H
+#ifndef GRAPH_TOOLKIT_GRAPH_H
+#define GRAPH_TOOLKIT_GRAPH_H
 
 #include <algorithm>
 #include <cmath>
@@ -274,4 +274,4 @@ public:
     void print() const;
 };
 
-#endif // HAMILTONIAN_CYCLE_FINDER_GRAPH_H
+#endif // GRAPH_TOOLKIT_GRAPH_H

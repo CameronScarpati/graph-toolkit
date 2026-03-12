@@ -83,9 +83,9 @@ Returns `true` if the graph was created with weighted edge support.
 
 ### `int getEdgeWeight(size_t from, size_t to) const`
 
-Returns the weight of the edge from `from` to `to`. Returns 0 if no edge exists.
+Returns the weight of the edge from `from` to `to`.
 
-- **Throws**: `std::out_of_range` if either vertex is out of bounds.
+- **Throws**: `std::invalid_argument` if the vertices are not adjacent.
 
 ### `std::vector<int> getNeighbors(size_t vertex) const`
 
@@ -184,3 +184,34 @@ Returns a string representation of the adjacency matrix.
 ### `void print() const`
 
 Prints the adjacency matrix to `stdout`.
+
+---
+
+## Free Functions (Algorithms)
+
+Header: `#include "Algorithms.h"`
+
+### `std::pair<std::vector<int>, std::vector<int>> dijkstra(const Graph& graph, size_t source)`
+
+Computes shortest paths from `source` to all other vertices using Dijkstra's algorithm. Returns a pair of `{distances, predecessors}`.
+
+- **Precondition**: All edge weights must be non-negative.
+- **Complexity**: O(E log V) using a min-heap.
+- **Throws**: `std::out_of_range` if `source` is out of bounds.
+- **Throws**: `std::invalid_argument` if the graph contains negative edge weights.
+
+### `std::pair<std::vector<int>, std::vector<int>> bellmanFord(const Graph& graph, size_t source)`
+
+Computes shortest paths from `source` to all other vertices using the Bellman-Ford algorithm. Supports negative edge weights. Returns a pair of `{distances, predecessors}`.
+
+- **Complexity**: O(V * E).
+- **Throws**: `std::out_of_range` if `source` is out of bounds.
+- **Throws**: `std::runtime_error` if a negative cycle is detected.
+
+### `std::vector<int> topologicalSort(const Graph& graph)`
+
+Returns vertices in topological order using Kahn's algorithm.
+
+- **Precondition**: The graph must be a directed acyclic graph (DAG).
+- **Complexity**: O(V + E).
+- **Throws**: `std::runtime_error` if the graph contains a cycle.

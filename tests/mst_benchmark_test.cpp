@@ -83,8 +83,7 @@ TEST_F(MSTBenchmarkTest, Benchmark_100Vertices_Dense)
     auto end = std::chrono::high_resolution_clock::now();
 
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    std::cout << "[BENCHMARK] MST 100 vertices (dense): " << duration.count() << " us"
-              << std::endl;
+    std::cout << "[BENCHMARK] MST 100 vertices (dense): " << duration.count() << " us" << std::endl;
 
     EXPECT_EQ(countEdges(mst), 99);
 }
