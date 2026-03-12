@@ -1,6 +1,7 @@
 .idea
 bin/
 build/
+build-main/
 cmake-build-debug
 cmake-build-debug-coverage
 test/*.js
