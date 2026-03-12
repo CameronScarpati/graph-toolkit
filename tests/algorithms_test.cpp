@@ -2,8 +2,7 @@
 #include <gtest/gtest.h>
 #include <limits>
 
-class AlgorithmsTest : public ::testing::Test {
-};
+class AlgorithmsTest : public ::testing::Test { };
 
 // --- Dijkstra Tests ---
 
@@ -23,10 +22,10 @@ TEST_F(AlgorithmsTest, Dijkstra_DirectedWeightedGraph)
     auto [dist, pred] = dijkstra(g, 0);
 
     EXPECT_EQ(dist[0], 0);
-    EXPECT_EQ(dist[1], 8);  // 0->3->1
-    EXPECT_EQ(dist[2], 9);  // 0->3->1->2
-    EXPECT_EQ(dist[3], 5);  // 0->3
-    EXPECT_EQ(dist[4], 7);  // 0->3->4
+    EXPECT_EQ(dist[1], 8); // 0->3->1
+    EXPECT_EQ(dist[2], 9); // 0->3->1->2
+    EXPECT_EQ(dist[3], 5); // 0->3
+    EXPECT_EQ(dist[4], 7); // 0->3->4
 }
 
 TEST_F(AlgorithmsTest, Dijkstra_UnreachableVertices)
@@ -98,10 +97,10 @@ TEST_F(AlgorithmsTest, BellmanFord_DirectedWeightedGraph)
 
     // Should produce the same results as Dijkstra for non-negative weights.
     EXPECT_EQ(dist[0], 0);
-    EXPECT_EQ(dist[1], 8);  // 0->3->1
-    EXPECT_EQ(dist[2], 9);  // 0->3->1->2
-    EXPECT_EQ(dist[3], 5);  // 0->3
-    EXPECT_EQ(dist[4], 7);  // 0->3->4
+    EXPECT_EQ(dist[1], 8); // 0->3->1
+    EXPECT_EQ(dist[2], 9); // 0->3->1->2
+    EXPECT_EQ(dist[3], 5); // 0->3
+    EXPECT_EQ(dist[4], 7); // 0->3->4
 }
 
 TEST_F(AlgorithmsTest, BellmanFord_SingleVertex)

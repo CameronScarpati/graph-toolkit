@@ -21,6 +21,9 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
+# Install directories (needed before target_include_directories)
+include(GNUInstallDirs)
+
 # Library target
 add_library(graph-toolkit-lib
         src/Graph.cpp
@@ -51,8 +54,6 @@ include(GoogleTest)
 gtest_discover_tests(testing)
 
 # Install targets
-include(GNUInstallDirs)
-
 install(TARGETS graph-toolkit-lib
         EXPORT graph-toolkit-targets
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
